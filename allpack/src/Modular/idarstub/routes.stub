@@ -1,0 +1,8 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Modules\{{module}}\Backend\DefaultController;
+
+Route::group(['prefix' => '{{module_lower}}', 'as' => '{{module_lower}}.'], function(){
+    Route::get('/', [DefaultController::class, 'index'])->name('index');
+});

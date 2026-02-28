@@ -1,0 +1,15 @@
+<?php
+
+namespace App\Modules\{{module}}\Backend;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Idaravel\AllPack\Idar;
+
+class DefaultController extends Controller
+{
+    public function index()
+    {
+        return view('{{module_lower}}::index');
+    }
+}

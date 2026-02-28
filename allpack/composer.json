@@ -1,0 +1,39 @@
+{
+  "name": "idaravel/allpack",
+  "description": "Modern Laravel Sql Builder + Modular Generator",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Idarcupu",
+      "email": "idarcupu@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=8.3",
+    "illuminate/support": "^11 || ^12",
+    "yajra/laravel-datatables-oracle": "^12"
+  },
+  "autoload": {
+    "psr-4": {
+      "Idaravel\\AllPack\\": "src/AllPack/",
+      "Idaravel\\Modular\\": "src/Modular/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Idaravel\\Modular\\ModularServiceProvider"
+      ]
+    }
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "@php postinstall.php"
+    ],
+    "post-update-cmd": [
+      "@php postinstall.php"
+    ]
+  },
+  "minimum-stability": "stable"
+}
