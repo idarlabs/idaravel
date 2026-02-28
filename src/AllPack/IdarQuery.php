@@ -2,9 +2,10 @@
 
 namespace Idaravel\AllPack;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class IdarQuery
 {
@@ -12,17 +13,52 @@ class IdarQuery
     protected $alias;
     protected $query;
     protected $with = [];
+    protected $useSoftDelete = true;
 
     public function __construct($table)
     {
         $this->table = $table;
         $this->query = DB::table($table);
+        $this->query->whereNull("{$this->table}.deleted_at");
     }
 
     public function alias($alias)
     {
         $this->alias = $alias;
         $this->query = DB::table("{$this->table} as {$alias}");
+        
+        if ($this->useSoftDelete) {
+            $this->query->whereNull("{$alias}.deleted_at");
+        }
+        
+        return $this;
+    }
+
+    public function withTrashed()
+    {
+        $this->useSoftDelete = false;
+        
+        if ($this->alias) {
+            $this->query = DB::table("{$this->table} as {$this->alias}");
+        } else {
+            $this->query = DB::table($this->table);
+        }
+        
+        return $this;
+    }
+
+    public function onlyTrashed()
+    {
+        $this->useSoftDelete = false;
+        $target = $this->alias ?: $this->table;
+
+        if ($this->alias) {
+            $this->query = DB::table("{$this->table} as {$this->alias}");
+        } else {
+            $this->query = DB::table($this->table);
+        }
+
+        $this->query->whereNotNull("{$target}.deleted_at");
         return $this;
     }
 
@@ -72,6 +108,20 @@ class IdarQuery
     }
 
     public function delete()
+    {
+        return $this->query->update([
+            'deleted_at' => Carbon::now()
+        ]);
+    }
+
+    public function restore()
+    {
+        return $this->query->update([
+            'deleted_at' => null
+        ]);
+    }
+
+    public function forceDelete()
     {
         return $this->query->delete();
     }
@@ -130,7 +180,7 @@ class IdarQuery
 
     public function one($where = null, callable $callback = null)
     {
-        if (is_array($where)) {
+        if ($where) {
             $this->query->where($where);
         }
 
@@ -146,7 +196,7 @@ class IdarQuery
 
     public function all($where = null, \Closure $callback = null)
     {
-        if (is_array($where)) {
+        if ($where) {
             $this->query->where($where);
         }
 
@@ -163,7 +213,9 @@ class IdarQuery
 
     public function find($id)
     {
-        $result = $this->where("{$this->table}.id", '=', $id)->one();
+        $target = $this->alias ?: $this->table;
+        $result = $this->where("{$target}.id", '=', $id)->one();
+        
         return $result ? new IdarRecord($this->table, $result) : null;
     }
 
@@ -177,8 +229,14 @@ class IdarQuery
 
             if (property_exists($row, $foreignKey) || isset($row->{$foreignKey})) {
                 $relatedId = $row->{$foreignKey};
-                $relData = DB::table($relationTable)->where('id', $relatedId)->first();
-                $row->{$relation} = $relData;
+                
+                $relQuery = DB::table($relationTable)->where('id', $relatedId);
+                
+                if ($this->useSoftDelete) {
+                    $relQuery->whereNull("{$relationTable}.deleted_at");
+                }
+
+                $row->{$relation} = $relQuery->first();
             }
         }
 
