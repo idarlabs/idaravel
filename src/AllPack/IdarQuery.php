@@ -253,23 +253,27 @@ class IdarQuery
         return $this->query->toSql();
     }
 
-    public function dataTable(array $raw = [], array $only = [])
-    {
+    public function dataTable(array $raw = [], array $only = []){
         $dt = DataTables::of($this->query);
 
-        if (!empty($this->with)) {
-            $dt->editColumn('*', function ($row) {
-                $row = $this->loadRelations($row);
-                
-                foreach($this->with as $relation => $tableName){
-                    $row->{"nama_{$relation}"} = $row->{$relation}->nama ?? '-';
-                }
-                return $row;
-            });
+        if(!empty($this->with)){
+            foreach($this->with as $relation){
+                $dt->addColumn("nama_{$relation}", function($row) use ($relation){
+                    $row = $this->loadRelations($row);
+                    $relData = $row->{$relation} ?? null;
+                    
+                    return $relData->nama ?? $relData->name ?? '-';
+                });
+            }
         }
 
-        if(!empty($raw)) $dt->rawColumns($raw);
-        if(!empty($only)) $dt->only($only);
+        if(!empty($raw)){
+            $dt->rawColumns($raw);
+        }
+
+        if(!empty($only)){
+            $dt->only($only);
+        }
 
         return $dt;
     }
