@@ -110,14 +110,16 @@ class IdarQuery
     public function delete()
     {
         return $this->query->update([
-            'deleted_at' => Carbon::now()
+            'deleted_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
         ]);
     }
 
     public function restore()
     {
         return $this->query->update([
-            'deleted_at' => null
+            'deleted_at' => null,
+            'updated_at' => Carbon::now()
         ]);
     }
 
