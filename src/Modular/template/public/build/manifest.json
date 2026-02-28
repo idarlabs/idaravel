@@ -1,0 +1,46 @@
+{
+  "resources/css/font/6.woff2": {
+    "file": "assets/6-7d93459d.woff2",
+    "src": "resources/css/font/6.woff2"
+  },
+  "resources/css/font/12.woff2": {
+    "file": "assets/12-9338e65f.woff2",
+    "src": "resources/css/font/12.woff2"
+  },
+  "resources/css/font/18.woff2": {
+    "file": "assets/18-7f653b3c.woff2",
+    "src": "resources/css/font/18.woff2"
+  },
+  "resources/css/font/24.woff2": {
+    "file": "assets/24-e8e147e1.woff2",
+    "src": "resources/css/font/24.woff2"
+  },
+  "resources/css/font/30.woff2": {
+    "file": "assets/30-7c00752c.woff2",
+    "src": "resources/css/font/30.woff2"
+  },
+  "resources/css/font/premium-line-icons.woff2": {
+    "file": "assets/premium-line-icons-03f30602.woff2",
+    "src": "resources/css/font/premium-line-icons.woff2"
+  },
+  "resources/css/fonts.css": {
+    "file": "assets/fonts-546ecfab.css",
+    "src": "resources/css/fonts.css",
+    "isEntry": true
+  },
+  "resources/css/premium-line-icons.min.css": {
+    "file": "assets/premium-line-icons.min-bed98d87.css",
+    "src": "resources/css/premium-line-icons.min.css",
+    "isEntry": true
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-4ed993c7.js",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-c42ce534.js",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  }
+}

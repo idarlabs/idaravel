@@ -1,0 +1,19 @@
+@extends('idaravel.layout')
+@section('konten')
+@section('jdl0', 'Menu')
+@section('jdl1', '{{module}}')
+@section('jdl2', 'Halaman {{module}}')
+
+<div class="card">
+  <div class="card-body">
+    <!-- kode mulai dari sini -->
+    <p>Kamu bisa menambahkan apa saja di sini.</p>
+  </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+});
+</script>
+@endsection
