@@ -257,13 +257,19 @@ class IdarQuery
     {
         $dt = DataTables::of($this->query);
 
-        if (!empty($raw)) {
-            $dt->rawColumns($raw);
+        if (!empty($this->with)) {
+            $dt->editColumn('*', function ($row) {
+                $row = $this->loadRelations($row);
+                
+                foreach($this->with as $relation => $tableName){
+                    $row->{"nama_{$relation}"} = $row->{$relation}->nama ?? '-';
+                }
+                return $row;
+            });
         }
 
-        if (!empty($only)) {
-            $dt->only($only);
-        }
+        if(!empty($raw)) $dt->rawColumns($raw);
+        if(!empty($only)) $dt->only($only);
 
         return $dt;
     }
