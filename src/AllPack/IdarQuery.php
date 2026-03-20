@@ -68,6 +68,24 @@ class IdarQuery
         return $this;
     }
 
+    public function whereNull($args)
+    {
+        $this->query->whereNull($args);
+        return $this;
+    }
+
+    public function whereBetween($kolom, Array $periode)
+    {
+        $this->query->whereBetween($kolom, $periode);
+        return $this;
+    }
+
+    public function whereRaw($raw)
+    {
+        $this->query->whereRaw($raw);
+        return $this;
+    }
+
     public function orWhere(...$args)
     {
         $this->query->orWhere(...$args);
