@@ -2,10 +2,10 @@
 
 namespace Idaravel\AllPack;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class IdarQuery
 {
@@ -68,6 +68,30 @@ class IdarQuery
         return $this;
     }
 
+    public function whereNull($args)
+    {
+        $this->query->whereNull($args);
+        return $this;
+    }
+
+    public function whereNotNull($args)
+    {
+        $this->query->whereNotNull($args);
+        return $this;
+    }
+
+    public function whereBetween($kolom, Array $periode)
+    {
+        $this->query->whereBetween($kolom, $periode);
+        return $this;
+    }
+
+    public function whereRaw($raw)
+    {
+        $this->query->whereRaw($raw);
+        return $this;
+    }
+
     public function orWhere(...$args)
     {
         $this->query->orWhere(...$args);
@@ -110,14 +134,16 @@ class IdarQuery
     public function delete()
     {
         return $this->query->update([
-            'deleted_at' => Carbon::now()
+            'deleted_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
         ]);
     }
 
     public function restore()
     {
         return $this->query->update([
-            'deleted_at' => null
+            'deleted_at' => null,
+            'updated_at' => Carbon::now()
         ]);
     }
 
@@ -243,6 +269,180 @@ class IdarQuery
         return $row;
     }
 
+    public function sum($column)
+    {
+        return $this->query->sum($column);
+    }
+
+    public function avg($column)
+    {
+        return $this->query->avg($column);
+    }
+
+    public function max($column)
+    {
+        return $this->query->max($column);
+    }
+
+    public function min($column)
+    {
+        return $this->query->min($column);
+    }
+
+    public function doesntExist()
+    {
+        return $this->query->doesntExist();
+    }
+
+    public function whereNotIn($col, $vals)
+    {
+        $this->query->whereNotIn($col, $vals);
+        return $this;
+    }
+
+    public function orWhereIn($col, $vals)
+    {
+        $this->query->orWhereIn($col, $vals);
+        return $this;
+    }
+
+    public function orWhereNotIn($col, $vals)
+    {
+        $this->query->orWhereNotIn($col, $vals);
+        return $this;
+    }
+
+    public function whereNotBetween($kolom, array $periode)
+    {
+        $this->query->whereNotBetween($kolom, $periode);
+        return $this;
+    }
+
+    public function whereDate($col, ...$args)
+    {
+        $this->query->whereDate($col, ...$args);
+        return $this;
+    }
+
+    public function orWhereRaw($raw, $bindings = [])
+    {
+        $this->query->orWhereRaw($raw, $bindings);
+        return $this;
+    }
+
+    public function selectRaw($expression, $bindings = [])
+    {
+        $this->query->selectRaw($expression, $bindings);
+        return $this;
+    }
+
+    public function distinct()
+    {
+        $this->query->distinct();
+        return $this;
+    }
+
+    public function latest($column = 'created_at')
+    {
+        $this->query->latest($column);
+        return $this;
+    }
+
+    public function oldest($column = 'created_at')
+    {
+        $this->query->oldest($column);
+        return $this;
+    }
+
+    public function having($column, $operator = null, $value = null, $boolean = 'and')
+    {
+        $this->query->having($column, $operator, $value, $boolean);
+        return $this;
+    }
+
+    public function havingRaw($expression, $bindings = [], $boolean = 'and')
+    {
+        $this->query->havingRaw($expression, $bindings, $boolean);
+        return $this;
+    }
+
+    public function rightJoin(...$args)
+    {
+        $this->query->rightJoin(...$args);
+        return $this;
+    }
+
+    public function pluck($column, $key = null)
+    {
+        return $this->query->pluck($column, $key);
+    }
+
+    public function chunk($count, callable $callback)
+    {
+        return $this->query->chunk($count, function ($results) use ($callback) {
+            foreach ($results as $row) {
+                $row = $this->loadRelations($row);
+            }
+            return $callback($results);
+        });
+    }
+
+    public function paginate($perPage = 15, $columns = ['*'], $pageName = 'page', $page = null)
+    {
+        $paginator = $this->query->paginate($perPage, $columns, $pageName, $page);
+        
+        $paginator->getCollection()->map(function ($row) {
+            return $this->loadRelations($row);
+        });
+
+        return $paginator;
+    }
+
+    public function getBindings()
+    {
+        return $this->query->getBindings();
+    }
+
+    public function increment($column, $amount = 1, array $extra = [])
+    {
+        return $this->query->increment($column, $amount, $extra);
+    }
+
+    public function decrement($column, $amount = 1, array $extra = [])
+    {
+        return $this->query->decrement($column, $amount, $extra);
+    }
+
+    public function orWhereNull($column)
+    {
+        $this->query->orWhereNull($column);
+        return $this;
+    }
+
+    public function orWhereNotNull($column)
+    {
+        $this->query->orWhereNotNull($column);
+        return $this;
+    }
+
+    public function whereExists(\Closure $callback, $boolean = 'and', $not = false)
+    {
+        $this->query->whereExists($callback, $boolean, $not);
+        return $this;
+    }
+
+    public function lockForUpdate()
+    {
+        $this->query->lockForUpdate();
+        return $this;
+    }
+
+    public function sharedLock()
+    {
+        $this->query->sharedLock();
+        return $this;
+    }
+
     public function toQuery()
     {
         return $this->query;
@@ -253,15 +453,25 @@ class IdarQuery
         return $this->query->toSql();
     }
 
-    public function dataTable(array $raw = [], array $only = [])
-    {
+    public function dataTable(array $raw = [], array $only = []){
         $dt = DataTables::of($this->query);
 
-        if (!empty($raw)) {
+        if(!empty($this->with)){
+            foreach($this->with as $relation){
+                $dt->addColumn("nama_{$relation}", function($row) use ($relation){
+                    $row = $this->loadRelations($row);
+                    $relData = $row->{$relation} ?? null;
+                    
+                    return $relData->nama ?? $relData->name ?? '-';
+                });
+            }
+        }
+
+        if(!empty($raw)){
             $dt->rawColumns($raw);
         }
 
-        if (!empty($only)) {
+        if(!empty($only)){
             $dt->only($only);
         }
 

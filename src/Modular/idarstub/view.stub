@@ -5,10 +5,10 @@
 @section('jdl2', 'Halaman {{module}}')
 
 <div class="card">
-  <div class="card-body">
-    <!-- kode mulai dari sini -->
-    <p>Kamu bisa menambahkan apa saja di sini.</p>
-  </div>
+    <div class="card-body">
+        <!-- kode mulai dari sini -->
+        <p>Kamu bisa menambahkan apa saja di sini.</p>
+    </div>
 </div>
 
 <script type="text/javascript">
