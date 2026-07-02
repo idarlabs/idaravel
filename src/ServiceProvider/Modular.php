@@ -30,9 +30,9 @@ class Modular extends ServiceProvider {
         View::share('idar', new \Idaravel\AllPack\Idar());
 
         $this->publishes([
-            __DIR__ . '/template/idaravel' => resource_path('views/idaravel'),
-            __DIR__ . '/template/partials' => resource_path('views/partials'),
-            __DIR__ . '/template/public' => public_path(),
+            __DIR__ . '/../Modular/template/idaravel' => resource_path('views/idaravel'),
+            __DIR__ . '/../Modular/template/partials' => resource_path('views/partials'),
+            __DIR__ . '/../Modular/template/public' => public_path(),
         ], 'idaravel-layout');
     }
 
